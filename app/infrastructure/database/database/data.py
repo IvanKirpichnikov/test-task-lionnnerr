@@ -19,7 +19,7 @@ class _DataDB(AbstractDB):
         async with self.connect.transaction():
             await self.connect.execute('''
                 CREATE TABLE IF NOT EXISTS data(
-                    id int REFERENCES users CASCADE ON DELETE,
+                    id int REFERENCES users ON DELETE CASCADE,
                     phone_number TEXT DEFAULT '',
                     email TEXT DEFAULT ''
                 );
