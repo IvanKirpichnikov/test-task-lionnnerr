@@ -16,7 +16,7 @@ class L10NMiddleware(BaseMiddleware):
         
         if user is None:
             return await handler(event, data)
-        hub: TranslatorHub = data.get('_hub')
+        hub: TranslatorHub = data.get('hub')
         data['l10n'] = hub.get_translator_by_locale(
             user.language_code
         )

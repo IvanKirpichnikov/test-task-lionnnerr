@@ -1,12 +1,21 @@
-from datetime import datetime as date_time
+from datetime import datetime as datetime
+from dataclasses import dataclass
+from typing import Optional
 
-from app.abc.model import AbstractModel
+from app.infrastructure.database.models.base import BaseModel
 
 
-class UserModel(AbstractModel):
+@dataclass(frozen=True)
+class UserDataModel(BaseModel):
     id: int
     tid: int
     cid: int
-    datetime: date_time
+    username: Optional[str] = None
+    datetime: datetime
     phone_number: str
     email: str
+
+@dataclass(frozen=True)
+class UserOrderModel(BaseModel):
+    user_data: UserDataModel
+    text: str

@@ -15,6 +15,7 @@ class DataBaseMiddleware(BaseMiddleware):
         data: dict[str, any]
     ) -> any:
         pool: Pool = data.get('pool')
+        
         async with pool.acquire() as connect:
             data['db'] = DB(connect)
             

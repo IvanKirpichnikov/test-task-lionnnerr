@@ -73,6 +73,5 @@ async def run():
         )
     except Exception as e:
         logger.exception(e)
-        await close(redis, pool)
     finally:
         await close(redis, pool)

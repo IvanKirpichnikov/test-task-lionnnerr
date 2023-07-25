@@ -1,5 +1,5 @@
 from pydantic import BaseSettings, Field, SecretStr
-
+from redis import Redis
 
 class BaseConfig(BaseSettings):
     class Config:
@@ -9,6 +9,7 @@ class BaseConfig(BaseSettings):
 class _BotConfig(BaseConfig):
     token: SecretStr
     skip_updates: bool
+    owner_id: int 
 
 class _PostgresQLConfig(BaseConfig):
     host: str = Field(env='psql_host')

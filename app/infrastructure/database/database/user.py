@@ -2,18 +2,17 @@ from logging import getLogger
 
 from asyncpg import Connection
 
-from app.abc.database import AbstractDB
-from app.infrastructure.database.models.user import UserModel
+from app.infrastructure.database.database.base import BaseDB
+from app.infrastructure.database.models.user import UserDataModel
 
 
 logger = getLogger(__name__)
 
 
-class _UserDB(AbstractDB):
+class _UserDB(BaseDB):
     table_name = 'users'
     
     def __init__(self, connect: Connection) -> None:
-        super().__init__(connect)
         self.connect = connect
     
     async def create_table(self) -> None:
@@ -23,15 +22,15 @@ class _UserDB(AbstractDB):
                     id SERIAL PRIMARY KEY,
                     tid BIGINT UNIQUE,
                     cid BIGINT UNIQUE,
-                    datetime TIMESTAMP DEFAULT now()
+                    datetime TIMESTAMPTZ DEFAULT now()
                 );
             ''')
             logger.info("Created table '%s'", self.table_name)
     
-    async def add_data(self, *, tid: int, cid: int) -> None:
+    async def add(self, *, tid: int, cid: int) -> None:
         async with self.connect.transaction():
             await self.connect.execute('''
-                INSERT INTO users(tid, cid, datetime)
+                INSERT INTO users(tid, cid)
                 VALUES($1, $2) ON CONFLICT DO NOTHING;
             ''', tid, cid
             )
@@ -40,7 +39,7 @@ class _UserDB(AbstractDB):
                 self.table_name, tid, cid
             )
     
-    async def delete_data(self, *, tid: int) -> None:
+    async def delete(self, *, tid: int) -> None:
         async with self.connect.transaction():
             await self.connect.execute('''
                 DELETE FROM users WHERE tid = $1;
@@ -51,7 +50,7 @@ class _UserDB(AbstractDB):
                 self.table_name, tid
             )
     
-    async def get_data(self, *, tid: int) -> UserModel:
+    async def get(self, *, tid: int) -> UserDataModel:
         async with self.connect.transaction():
             cursor = await self.connect.cursor('''
                 SELECT users.id,
@@ -65,4 +64,4 @@ class _UserDB(AbstractDB):
             ''', tid
             )
             data = await cursor.fetchrow()
-            return UserModel(**data)
+            return UserDataModel(**data)

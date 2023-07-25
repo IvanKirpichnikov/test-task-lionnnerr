@@ -2,17 +2,16 @@ from logging import getLogger
 
 from asyncpg import Connection
 
-from app.abc.database import AbstractDB
+from app.infrastructure.database.database.base import BaseDB
 
 
 logger = getLogger()
 
 
-class _DataDB(AbstractDB):
+class _DataDB(BaseDB):
     table_name = 'data'
     
     def __init__(self, connect: Connection) -> None:
-        super().__init__(connect)
         self.connect = connect
     
     async def create_table(self) -> None:
@@ -26,7 +25,7 @@ class _DataDB(AbstractDB):
             ''')
             logger.info("Created table '%s'", 'data')
     
-    async def add_data(self, *, tid: int) -> None:
+    async def add(self, *, tid: int) -> None:
         async with self.connect.transaction():
             await self.connect.execute('''
                 INSERT INTO data(id)
@@ -39,7 +38,8 @@ class _DataDB(AbstractDB):
         async with self.connect.transaction():
             await self.connect.execute('''
                 UPDATE data SET email = $1
-                WHERE tid = $2;
+                FROM users WHERE users.id = data.id
+                AND users.tid = $2;
             ''', email, tid
             )
             logger.info(
@@ -56,7 +56,8 @@ class _DataDB(AbstractDB):
         async with self.connect.transaction():
             await self.connect.execute('''
                 UPDATE data SET phone_number = $1
-                WHERE tid = $2;
+                FROM users WHERE users.id = data.id
+                AND users.tid = $2;
             ''', phone_number, tid
             )
             logger.info(

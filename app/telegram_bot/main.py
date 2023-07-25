@@ -8,9 +8,10 @@ from fluentogram import TranslatorHub
 from redis.asyncio import Redis
 
 from config import Config
+from app.telegram_bot.handlers.routers import router
 from app.telegram_bot.middlewares.database import DataBaseMiddleware
 from app.telegram_bot.middlewares.l10n import L10NMiddleware
-from app.telegram_bot.middlewares.trottling import TrottlingMiddleware
+from app.telegram_bot.middlewares.throttling import ThrottlingMiddleware
 
 
 logger = getLogger(__name__)
@@ -40,8 +41,8 @@ async def start_telegram_bot(
         events_isolation=RedisEventIsolation(redis=redis)
     )
     logger.info('Setups middlewares')
-    dp.message.middleware(TrottlingMiddleware())
-    dp.callback_query.middleware(TrottlingMiddleware())
+    dp.message.middleware(ThrottlingMiddleware())
+    dp.callback_query.middleware(ThrottlingMiddleware())
     dp.update.middleware(DataBaseMiddleware())
     dp.update.middleware(L10NMiddleware())
     
@@ -49,11 +50,15 @@ async def start_telegram_bot(
     dp['pool'] = pool
     dp['redis'] = redis
     dp['hub'] = hub
+    dp['config'] = config
+    
+    logger.info('setup routers')
+    dp.include_router(router)
     
     allowed_updates=dp.resolve_used_update_types()
     
     logger.info('Start telegram bot')
-    logger.info('Updates=%s', *allowed_updates)
+    logger.info('Updates=%s', allowed_updates)
     
     await dp.start_polling(
         bot, allowed_updates=allowed_updates
