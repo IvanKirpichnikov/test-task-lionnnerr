@@ -56,7 +56,10 @@ class _UserDB(BaseDB):
                 SELECT users.id,
                        users.tid,
                        users.cid,
-                       users.datetime,
+                       TO_CHAR(
+                           users.datetime,
+                           'DD.MM.YYYY HH24:MI:SS'
+                       ) datetime,
                        data.phone_number,
                        data.email
                 FROM users, data

@@ -14,7 +14,7 @@ class UserData(CallbackData, prefix='user_data'):
 
 def keyboard_get_user_data(
     l10n: TranslatorRunner,
-    redis_key: int
+    redis_key: str
 ) -> InlineKeyboardMarkup:
     """
     :param l10n: fluentogram.TranslatorRunner локали

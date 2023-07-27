@@ -1,7 +1,8 @@
+from dataclasses import asdict
 from json import loads, dumps
 from typing import TYPE_CHECKING
 
-from aiogram import Bot, F, Router
+from aiogram import Bot, F, Router, html
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from fluentogram import TranslatorRunner
@@ -24,7 +25,7 @@ router = Router()
 LIMIT_ORDER_TEXT = 2000
 
 
-@router.callback_query(F.data=='order_an_order')
+@router.callback_query(F.data == 'order_an_order')
 async def ask_order_text(
     callback: CallbackQuery,
     state: FSMContext,
@@ -38,7 +39,7 @@ async def ask_order_text(
     await callback.answer()
 
 
-@router.message(Order.text, F.text.len()<=LIMIT_ORDER_TEXT)
+@router.message(Order.text, F.text.len() <= LIMIT_ORDER_TEXT)
 async def get_order_text(
     message: Message,
     bot: Bot,
@@ -55,7 +56,7 @@ async def get_order_text(
     username = f'@{message.from_user.username}' if message.from_user.username else ''
     user_data = await db.user.get(tid=message.from_user.id)
     user_data.username = username
-    user_order = UserOrderModel(user_data=user_data, order_text=order_text)
+    user_order = UserOrderModel(user_data=user_data, text=order_text)
     
     await message.answer(text=l10n.thanks.to.order())
     await bot.send_message(
@@ -63,9 +64,10 @@ async def get_order_text(
         text=l10n.user.order.no.data(
             tid=str(message.from_user.id),
             username=username,
-            text=order_text
+            order_text=html.quote(order_text)
         ),
         reply_markup=keyboard_get_user_data(l10n, redis_key)
     )
-    await redis.set(redis_key, dumps(vars(user_order)))
+
+    await redis.set(redis_key, dumps(asdict(user_order)))
     await menu_message(message, state, l10n)

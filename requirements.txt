@@ -1,0 +1,6 @@
+aiogram==3.0.0b7
+asyncpg==0.28.0
+fluentogram==1.1.6
+pydantic[dotenv]==1.10.4
+redis==4.6.0
+cachetools==5.3.1

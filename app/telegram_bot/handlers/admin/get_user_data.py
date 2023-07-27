@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from json import loads
 
-from aiogram import Router
+from aiogram import Router, html
 from aiogram.types import CallbackQuery
 from fluentogram import TranslatorRunner
 from redis.asyncio import Redis
@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 
 router = Router()
 
-
 @router.callback_query(UserData.filter())
 async def set_user_data(
     callback: CallbackQuery,
@@ -26,21 +25,21 @@ async def set_user_data(
 ) -> None:
     redis_key = callback_data.redis_key
     data = loads(await redis.get(redis_key))
-    
+
     user_data = UserDataModel(**data.get('user_data'))
     user_order = UserOrderModel(
         user_data=user_data,
-        order_text=data.get('order_text')
+        text=data.get('text')
     )
     
     await callback.message.edit_text(
         text=l10n.user.order.data(
-            tid=user_data.tid,
+            tid=str(user_data.tid),
             username=user_data.username,
             datetime=user_data.datetime,
             phone_number=user_data.phone_number,
             email=user_data.email,
-            order_text=user_order.text
+            order_text=html.quote(user_order.text)
         )
     )
 
