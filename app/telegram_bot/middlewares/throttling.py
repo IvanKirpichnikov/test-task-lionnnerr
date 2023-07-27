@@ -1,13 +1,13 @@
-from cachetools import TTLCache
-from typing import Awaitable, Callable, Union
+from typing import Awaitable, Callable, Union, Dict
 
 from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery, TelegramObject
+from cachetools import TTLCache
 
 
 class ThrottlingMiddleware(BaseMiddleware):
     def __init__(self, rate_limit: float = 0.8):
-        self.cache: dict[int, None] = TTLCache(maxsize=10000, ttl=rate_limit)
+        self.cache: Dict[int, None] = TTLCache(maxsize=10000, ttl=rate_limit)
         
     async def __call__(
         self,

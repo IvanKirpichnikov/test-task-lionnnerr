@@ -4,7 +4,6 @@ from asyncpg import Connection
 
 from app.infrastructure.database.database.base import BaseDB
 
-
 logger = getLogger()
 
 
@@ -23,7 +22,7 @@ class _DataDB(BaseDB):
                     email TEXT DEFAULT ''
                 );
             ''')
-            logger.info("Created table '%s'", 'data')
+            logger.info("Created table '%s'", self.table_name)
     
     async def add(self, *, tid: int) -> None:
         async with self.connect.transaction():

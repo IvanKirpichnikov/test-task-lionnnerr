@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 from aiogram import F, Router, Bot
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
+from aiogram.types import CallbackQuery, Message
+from fluentogram import TranslatorRunner
 
 from app.infrastructure.database.database.db import DB
 from app.telegram_bot.filters.check_phone_number import CheckPhoneNumber
 from app.telegram_bot.keyboards.inline import keyboard_my_profile
 from app.telegram_bot.keyboards.reply import keyboard_ask_phone_number
 from app.telegram_bot.states import MyProfile
-from fluentogram import TranslatorRunner
 
 if TYPE_CHECKING:
     from stubs import TranslatorRunner
@@ -26,8 +26,8 @@ async def my_profile_message(
     l10n: TranslatorRunner,
     db: DB
 ) -> None:
-    username = f'@{message.from_user.username}' or ''
-    
+    username = f'@{message.from_user.username}' if message.from_user.username else ''
+
     data = await db.user.get(tid=message.from_user.id)
     await message.answer(
         text=l10n.my.profile(
@@ -48,8 +48,8 @@ async def my_profile_callback_query(
     l10n: TranslatorRunner,
     db: DB
 ) -> None:
-    username = f'@{callback.from_user.username}' or ''
-    
+    username = f'@{callback.from_user.username}' if callback.from_user.username else ''
+
     data = await db.user.get(tid=callback.from_user.id)
     await callback.message.edit_text(
         text=l10n.my.profile(
@@ -98,7 +98,7 @@ async def get_new_phone_number(
     )
     await my_profile_message(message, state, l10n, db)
 
-@router.callback_query(F.data=='edit_email')
+@router.callback_query(F.data == 'edit_email')
 async def ask_new_email(
     callback: CallbackQuery,
     state: FSMContext,
@@ -117,7 +117,7 @@ async def get_new_email(
     email = [
         data.extract_from(message.text)
         for data in message.entities
-        if data.type == 'email' 
+        if data.type == 'email'
     ][-1]
     await message.delete()
     await db.data.update_email(

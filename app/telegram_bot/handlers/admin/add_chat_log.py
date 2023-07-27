@@ -8,6 +8,7 @@ from redis.asyncio import Redis
 
 from config import Config
 
+
 router = Router(name=__name__)
 logger = getLogger()
 
@@ -25,7 +26,7 @@ async def add_bot_for_chat(
     redis: Redis
 ) -> None:
     user_id = event.from_user.id
-    print(user_id, config.bot.owner_id)
+
     if user_id != config.bot.owner_id:
         await event.chat.leave()
         return
@@ -34,4 +35,3 @@ async def add_bot_for_chat(
         event.chat.id
     )
     await redis.set('log_chat_id', event.chat.id)
-    

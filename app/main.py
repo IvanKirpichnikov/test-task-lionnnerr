@@ -5,10 +5,9 @@ from fluent_compiler.bundle import FluentBundle
 from fluentogram import TranslatorHub, FluentTranslator
 from redis.asyncio import Redis
 
-from config import Config
 from app.infrastructure.database.utils.create_tables import create_tables
 from app.telegram_bot.main import start_telegram_bot
-
+from config import Config
 
 logger = getLogger(__name__)
 
@@ -39,7 +38,7 @@ async def run():
         ],
         root_locale='ru'
     )
-    logger.info('Created TranslatorHub')
+    logger.debug('Created TranslatorHub')
     pool = await create_pool(
         user=psql.user,
         password=psql.password.get_secret_value(),
@@ -47,7 +46,7 @@ async def run():
         port=psql.port,
         database=psql.database
     )
-    logger.info('Created postgresql pool. Pool=%s', pool)
+    logger.debug('Created postgresql pool. Pool=%s', pool)
     redis = Redis(
         encoding='utf-8',
         host=redis.host,
@@ -55,7 +54,7 @@ async def run():
         password=redis.password.get_secret_value(),
         db=redis.database
     )
-    logger.info('Created redis connect. Connect=%s', redis)
+    logger.debug('Created redis connect. Connect=%s', redis)
     
     async with pool.acquire() as connect:
         try:

@@ -1,12 +1,11 @@
-from typing import TYPE_CHECKING
 from json import loads
+from typing import TYPE_CHECKING
 
 from aiogram import Router, html
 from aiogram.types import CallbackQuery
 from fluentogram import TranslatorRunner
 from redis.asyncio import Redis
 
-from app.infrastructure.database.database.db import DB
 from app.infrastructure.database.models.user import UserOrderModel, UserDataModel
 from app.telegram_bot.keyboards.admin.inline import UserData
 

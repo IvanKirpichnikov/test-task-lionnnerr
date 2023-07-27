@@ -22,6 +22,7 @@ class Button:
     my: ButtonMy
     order: ButtonOrder
     edit: ButtonEdit
+    gett: ButtonGett
     ask: ButtonAsk
 
     @staticmethod
@@ -54,6 +55,11 @@ class ButtonEditPhone:
     def number() -> Literal["""Номер телефона"""]: ...
 
 
+class ButtonGett:
+    @staticmethod
+    def info() -> Literal["""Доп. инфо."""]: ...
+
+
 class ButtonAsk:
     phone: ButtonAskPhone
 
@@ -74,10 +80,10 @@ class AskOrder:
 
 
 class Thanks:
-    for_: ThanksFor_
+    to: ThanksTo
 
 
-class ThanksFor_:
+class ThanksTo:
     @staticmethod
     def order() -> Literal["""Спасибо за заказ!"""]: ...
 
@@ -88,9 +94,7 @@ class My:
 Никнейм: { $username }
 Дата регистрации: { $datetime }
 Номер телефона: { $phone_number }
-Эл. почта: { $email }
-
-Для редактирования данных нажмите на соответствующую кнопку"""]: ...
+Эл. почта: { $email }"""]: ...
 
 
 class Edit:
@@ -116,13 +120,13 @@ class UserOrder:
     no: UserOrderNo
 
     @staticmethod
-    def data(*, text) -> Literal["""
-Текст: { $text }"""]: ...
+    def data(*, order_text) -> Literal["""
+Текст: { $order_text }"""]: ...
 
 
 class UserOrderNo:
     @staticmethod
-    def data(*, tid, username, text) -> Literal["""Айди: &lt;code&gt;{ $tid }&lt;/code&gt;
+    def data(*, tid, username, order_text) -> Literal["""Айди: &lt;code&gt;{ $tid }&lt;/code&gt;
 Никнейм: { $username }
-Текст: { $text }"""]: ...
+Текст: { $order_text }"""]: ...
 

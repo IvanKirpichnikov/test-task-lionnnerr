@@ -13,18 +13,18 @@ class UserData(CallbackData, prefix='user_data'):
 
 
 def keyboard_get_user_data(
-    l10n: TranslatorRunner,
-    redis_key: str
+        l10n: TranslatorRunner,
+        redis_key: str
 ) -> InlineKeyboardMarkup:
     """
     :param l10n: fluentogram.TranslatorRunner локали
-    :maram redis_ket: redis ключ получения информации о юзере
+    :param redis_key: redis ключ получения информации о юзере
     """
     bilder = InlineKeyboardBuilder()
-    
+
     bilder.button(
         text=l10n.button.gett.info(),
         callback_data=UserData(redis_key=redis_key)
     )
-    
+
     return bilder.as_markup()

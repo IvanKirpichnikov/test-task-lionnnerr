@@ -1,5 +1,5 @@
 from pydantic import BaseSettings, Field, SecretStr
-from redis import Redis
+
 
 class BaseConfig(BaseSettings):
     class Config:

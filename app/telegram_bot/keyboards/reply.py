@@ -18,5 +18,3 @@ def keyboard_ask_phone_number(l10n: TranslatorRunner) -> ReplyKeyboardMarkup:
     return bilder.as_markup(
         resize_keyboard=True,
     )
-
-

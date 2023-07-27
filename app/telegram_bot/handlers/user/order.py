@@ -8,14 +8,13 @@ from aiogram.types import CallbackQuery, Message
 from fluentogram import TranslatorRunner
 from redis.asyncio import Redis
 
-from app.telegram_bot.states import Order
 from app.infrastructure.database.database.db import DB
 from app.infrastructure.database.models.user import UserOrderModel
 from app.telegram_bot.handlers.user.menu import menu_message
 from app.telegram_bot.keyboards.admin.inline import keyboard_get_user_data
 from app.telegram_bot.keyboards.inline import keyboard_cancel
+from app.telegram_bot.states import Order
 from app.telegram_bot.utils.random_key import random_key
-
 
 if TYPE_CHECKING:
     from stubs import TranslatorRunner
@@ -64,7 +63,7 @@ async def get_order_text(
         text=l10n.user.order.no.data(
             tid=str(message.from_user.id),
             username=username,
-            order_text=html.quote(order_text)
+            order_text=order_text
         ),
         reply_markup=keyboard_get_user_data(l10n, redis_key)
     )

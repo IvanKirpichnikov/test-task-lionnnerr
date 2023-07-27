@@ -14,8 +14,7 @@ class UserDataModel(BaseModel):
     email: str
     username: Optional[str] = None
 
-
-@dataclass(frozen=True)
+@dataclass()
 class UserOrderModel(BaseModel):
     user_data: UserDataModel
     text: str

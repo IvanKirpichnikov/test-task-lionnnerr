@@ -4,9 +4,9 @@ from aiogram import Router, F
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
+from fluentogram import TranslatorRunner
 
 from app.telegram_bot.keyboards.inline import keyboard_menu
-from fluentogram import TranslatorRunner
 
 if TYPE_CHECKING:
     from stubs import TranslatorRunner

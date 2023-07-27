@@ -5,7 +5,6 @@ from asyncpg import Connection
 from app.infrastructure.database.database.base import BaseDB
 from app.infrastructure.database.models.user import UserDataModel
 
-
 logger = getLogger(__name__)
 
 
