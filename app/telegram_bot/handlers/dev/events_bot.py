@@ -21,5 +21,5 @@ async def new_user(event: ChatMemberUpdated, db: DB):
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(MEMBER >> KICKED))
-async def new_user(event: ChatMemberUpdated, db: DB):
+async def delete_user(event: ChatMemberUpdated, db: DB):
     await db.user.delete(tid=event.from_user.id)
